@@ -1,7 +1,7 @@
 ---
 site:
-  title: Showroom Template Demo
-  url: https://redhat-scholars.github.io/course-template
+  title: LB2958 Taste the Red Hat Lightspeed
+  url: https://www.redhat.com
   start_page: modules::index.adoc
 
 content:

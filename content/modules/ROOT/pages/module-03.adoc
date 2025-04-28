@@ -1,0 +1,179 @@
+= OpenShift Lightspeed
+OpenShift Lightspeed uses a natural language interface to allow users to ask
+questions. You have used many chat interfaces before, so OpenShift Lightspeed 
+should feel very comfortable to use.
+
+== OpenShift Lightspeed Architecture
+OpenShift Lightspeed today is a relatively small and lightweight system that
+you deploy into each OpenShift Container Platform cluster. The operator deploys
+three components:
+
+* A web console plugin (the chat interface)
+* A back-end server (the chat interface calls the server)
+* A PostgreSQL database (for temporary conversation caching)
+
+image::ols-arch.png[]
+
+You can also see that OpenShift Lightspeed talks to a model provider. In the
+case of this lab environment, that provider is Azure OpenAI using the GPT-4o
+model.
+
+The little green box says RAG which stands for retrieval-augmented generation.
+
+== RAG Basics
+RAG is a way of providing additional context to an LLM to help improve the
+quality of responses. When relying on only the LLM, two common problems can
+arise:
+
+1. Hallucination - the model invents an answer that is not grounded in fact,
+  even when the model was trained with the answer 
+2. Missing data - the model was
+  never trained on the required information in the first place, so answers could
+  be anything
+
+When providing contextual information to the LLM at the time of asking a
+question, the response quality can be dramatically improved, even if the model
+was never trained on the specific contextual information.
+
+OpenShift Lightspeed will grab the relevant OpenShift Container Platform
+documentation to match the cluster version when it deploys, and it uses that
+documentation as the additional context for answering user questions.
+
+The specific details of vector databases and embedding and encoding are outside
+the scope of this lab.
+
+Now, with your understanding of the fundamentals, let's try and use OpenShift
+Lightspeed.
+
+== Guardrails
+OpenShift Lightspeed is designed only to answer OpenShift-related questions, and
+it will generally attempt to reject questions that are unrelated to OpenShift 
+and Kubernetes. If you try hard enough, you can probably get it to do something
+it wasn't explicitly designed to do, but this is a shortcoming of all
+non-deterministic language-model-based systems. It is a bit of a game of 
+whack-a-mole trying to keep up with all of the possible negative outcomes, and
+trying to prevent them is a topic of active Ph,D. research right now. If you see
+something bad, be sure to report it using the feedback feature. We will always
+do our best to improve the quality and safety of the system.
+
+== Starter Question
+Log into your OpenShift console using the admin credentials provided on the 
+original screen where you found the link to this lab guide. Once you have
+logged-in, you should see the OpenShift Lightspeed button in the bottom-right
+corner of the OpenShift console:
+
+image::ols-icon.png[]
+
+Click the button, and it will open the chat interface:
+
+image::ols-interface.png[]
+
+Why don't you start out by asking an easy question like:
+
+[source,sh,role="execute",subs=attributes+]
+----
+How do I configure a horizontal pod autoscaler?
+----
+
+OpenShift Lightspeed should provide a detailed answer about how to do it. And,
+if you scroll to the bottom of the chat window, you will see that OpenShift 
+Lightspeed has also provided a link to the documentation that was used to 
+generate its response:
+
+image::related-docs.png[]
+
+== Troubleshooting Question
+In your environment there is a pod that is failing to schedule for some reason.
+In the OpenShift console, click _Workloads_ on the left, then _Pods_, and then
+make sure to select the project named `broken` from the dropdown at the top of
+the page:
+
+image::broken-project-select.png[]
+
+Now, in the pod list, click on the one pod which you can see is in the _Pending_
+state.
+
+If you closed the OpenShift Lightspeed window, re-open it. Make sure to click
+the _Clear Chat_ button in the OpenShift Lightspeed interface.  Then, click the 
+_+_ button to attach information. In this case, as this pod is currently
+_Pending_, there are no logs we can attach, and we don't really care about the 
+events, either. Go ahead and attach the _Filtered YAML_, which will include the
+status information for this pod. 
+
+image::attach-button.png[]
+
+Then, simply ask:
+
+[source,role="execute",subs=attributes+]
+----
+What's wrong with this pod?
+----
+
+You should get some detailed information about nodes and node selectors. 
+
+Now go ahead and attach the complete YAML, and then simply ask:
+
+[source,sh,role="execute",subs=attributes+]
+----
+Can you fix it?
+----
+
+Fortunately, this is a pretty obvious typo: `worker` is spelled wrong. And,
+GPT-4o is a very capable model, so it suggests that this typo might be the
+problem, and suggests some ways for you to fix it.
+
+Can you see how the simple act of attaching details to your request can 
+dramatically improve troubleshooting outcomes? 
+
+Note that you can attach multiple things to your request at the same time, like
+a service, a route, and a deployment. This can make more complicated
+troubleshooting scenarios easier.
+
+== Cluster Interrogation
+At this time, OpenShift Lightspeed cannot actively interrogate the cluster via
+the OpenShift/Kubernetes API, but that is a feature we are actively working on
+and hope to have in Technology Preview very soon!
+
+Try asking some questions about your cluster and see how OpenShift Lightspeed
+currently responds. It should give you answers that help you find the answer
+yourself. If you're unfamiliar with OpenShift, you can try a question like:
+
+[source,sh,role="execute",subs=attributes+]
+----
+What pods are in the openshift-lightspeed namespace?
+----
+
+== Cluster Configuration
+While the horizontal pod autoscaler question was mostly a user workload-related
+question, OpenShift Lightspeed can just as easily help you with performing 
+cluster configuration operations. OpenShift comes with an internal container 
+image registry, but that registry is not available outside of the cluster by
+default. Try asking OpenShift Lightspeed:
+
+[source,sh,role="execute",subs=attributes+]
+----
+How can I expose the OpenShift registry outside of the cluster?
+----
+
+== Roadmap
+OpenShift Lightspeed is evolving quickly, and there are many exciting features
+on the roadmap. The two most exciting ones are:
+
+* BYO Knowledge
+  Organizations often have their own specific operational procedures and
+  policies for how they use OpenShift Container Platform. The BYO Knowledge
+  feature enables orgzniations to add their own documentation so that it can be
+  used in the answers that OpenShift Lightspeed provides.
+
+* Cluster interrogation and awareness
+  As you saw, currently, OpenShift Lightspeed cannot interrogate the cluster to
+  get information for you. The cluster interrogation and awareness feature will
+  use AI agents and tools to empower OpenShift Lightspeed to interact with the 
+  cluster and will enhance the ability to troubleshoot problems and investigate.
+
+== Thank You!
+We love user feedback and talking to customers. If you're interested in meeting
+with the OpenShift Lightspeed team, please visit the product page and fill out 
+the form to https://www.redhat.com/en/technologies/cloud-computing/openshift/lightspeed[contact us]:
+
+image::lightspeed-page-qr.gif[]
