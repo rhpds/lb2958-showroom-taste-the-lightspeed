@@ -1,149 +1,514 @@
-= Building an Application with rpms
+= RHEL Lightspeed
 
-== Downloading the UBI
+== Timezone Changes
+Let's ask Command Line Assistant (CLA) how to configure the timezone of our RHEL
+system to Vancouver, Canada. Click the run button in the top right corner of the
+code block below.
 
-In this lab, you will be installing software into the container 
-image running as an interactive application. To do this you will
-need `yum`, but do not need `systemd` for managing services within the
-container environment.  For that reason, you will be using the *Standard*
-UBI image (as opposed to the Minimal or Multi-service images).
-
-Using the "buildah from" command will download and meld the container image. This particular image we are using is the Red Hat Universal Base Image or UBI. From the ourput of the command, you will notice that we are pulling down the latest one, which is for RHEL 9. 
-
-. Execute the  download the Standard UBI
-image from Red Hat's registry.
-
-+
-[source,sh,role=execute]
+[source,sh,role="execute",subs=attributes+]
 ----
-buildah from registry.access.redhat.com/ubi9/ubi
+c "how do I configure the timezone to Vancouver Canada on the cli in RHEL 9"
 ----
 
-[#repositories]
-== Installing Repositories
-In this lab, you are going to containerize a software package that is already
-packaged in RPM format and stored in the Extra Packages for Enterprise Linux
-(EPEL) repository.
+Here's the output.
 
-Software often has requirements for prerequisite software that must be installed
-on the machine for it to work properly.  `yum` will resolve those
-dependencies for you, as long as it can locate the required packages in
-repositories defined on the machine.  The Red Hat Universal Base Image (UBI)
-downloaded in the previous step has access to some Red Hat Enterprise Linux
-repositories.  However, the target package for the lab is from EPEL.  
+image::timezoneoutput.png[]
 
-. In the command below, `buildah` is going to run a command on the
-`ubi-working-container` image.  The `--` indicates that the command should be
-executed from within the container, which means the results will be applied into
-the container image.  Lastly, you are providing the `yum` command to install a
-package that defines all of the repositories from EPEL, `epel-release-latest-9`.
+Let's execute the suggested solution.
 
-+
-[source,bash]
+[source,sh,role="execute",subs=attributes+]
 ----
-buildah run ubi-working-container -- yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+timedatectl set-timezone America/Vancouver
 ----
 
-
-. You can verify that the above command did not install the RPM on the host system.
-
-+
-[source,bash]
+To view the result, run the following, as suggested by CLA.
+[source,sh,role="execute",subs=attributes+]
 ----
-rpm -q epel-release
+timedatectl
 ----
 
-NOTE: If your repository configurations are not distributed as an RPM, but instead as
-individual `.repo` files, you could use the `buildah copy` command to copy
-files from the host operating system into the container image.  You will see
-an example of using `buildah copy` later in this lab.
+image::timedatectl.png[]
 
-[#software]
-== Installing Software
+== Scripting Assistance
+It may be the case that you will have to perform a repetitive task, such as
+creating user accounts, at least once in your life. Command Line Assistant can
+help you reduce the burden of such a task.
 
+In this section, we'll pretend that you've been provided with an input file
+containing a list of users and their preferred shells. You have been asked to
+use this input file to generate user accounts.
 
-. Now that the yum repositories are defined within the container, execute 
-another `yum install`, within the container, to install the target
-software: `moon-buggy`.
+=== Comma Separated Value input file
 
-+
-[source,bash]
+Let's take a look at the provided a comma separated value (csv) file containing
+usernames and preferred terminal shells.
+
+You can take a look here.
+
+[source,sh,role="execute",subs=attributes+]
 ----
-buildah run ubi-working-container -- yum -y install moon-buggy
-----
-
-
-== Committing the Container Image
-
-. At this point, the container is configured.  It is time to transition from a
-working container into a committed image.  In the command below, you will use
-the `buildah` command to commit the working container to an image called:
-`moon-buggy`.
-
-+
-[source,bash]
-----
-buildah commit ubi-working-container moon-buggy
+cat ~/lb2958-showroom-taste-the-lightspeed/misc/users.csv
 ----
 
-+
-. The output of `podman image list` should confirm the image was created.
+We'll ask CLA to create a shell script to take the file `users.csv` as input and
+create users with their preferred shells.
 
-+
-[source,bash]
+=== Create the script
+
+It's important to be very specific when asking CLA to write any sort of code.
+For example, we'll run the following request.
+
+[source,sh,role="execute",subs=attributes+]
 ----
-podman image list
-----
-
-
-== Deploy the Container
-
-Now the software has been installed and a new container image created.  It is
-time to spawn a runtime of the container image and validate the software.  The
-software we are using is a command line command.  
-
-. When you `run` the container,
-it will be in interactive (`-it`) mode, based on the `moon-buggy` container
-image and the command run interactively will be `/usr/bin/moon-buggy`.
-
-+
-[source,bash]
-----
-podman run -it moon-buggy /usr/bin/moon-buggy
+c "write a script that creates user accounts using a csv input file containing usernames and preferred shells in rhel9"
 ----
 
-+
-[source,textinfo]
+Here's the result, at the time that this lab was written.
+
+image::bash_script.png[]
+
+[NOTE]
+====
+Command line assistant (CLA) makes use of a large language model (LLM) as
+well as a Retrieval Augmented Generation (RAG) database, generated from the
+corpus of Red Hat's knowledge base. Responses from CLA can vary, depending on
+the progress of training the LLM. It may be the case that you'll need to refine
+your question to CLA to obtain an accurate answer, especially if your question
+asks CLA to generate code such as a shell script.
+====
+
+Below is the output script generated by CLA at the time this lab was written.
+You can copy and paste this into `/root/create_user.sh` into the built-in text
+editor.
+
+[source,sh,role="execute",subs=attributes+]
+----
+#!/bin/bash
+
+# Check if a CSV file is provided as an argument
+if [ -z "$1" ]; then
+  echo "Usage: $0 <input.csv>"
+  exit 1
+fi
+
+# Read the CSV file line by line
+while IFS=, read -r username shell; do
+  # Create the user with the specified shell
+  useradd -m -s "$shell" "$username"
+
+  echo "User '$username' with shell '$shell' created successfully."
+done < "$1"
 ----
 
-<<< OUTPUT ABRIDGED >>>
-               MM     MM   OOOOO    OOOOO   NN     N
-               M M   M M  O     O  O     O  N N    N
-               M  M M  M  O     O  O     O  N  N   N
-               M   M   M  O     O  O     O  N   N  N
-               M       M  O     O  O     O  N    N N
-               M       M   OOOOO    OOOOO   N     NN
+=== Run the script to create the new accounts
 
-                     BBBBBB   U     U   GGGGG    GGGGG   Y     Y
-                     B     B  U     U  G     G  G     G   Y   Y
-                     BBBBBB   U     U  G        G          Y Y
-                     B     B  U     U  G   GGG  G   GGG     Y
-                     B     B  U     U  G     G  G     G    Y
-                     BBBBBB    UUUUU    GGGGG    GGGGG   YY
+Run the script.
 
-<<< OUTPUT ABRIDGED >>>
+[source,sh,role="execute",subs=attributes+]
+----
+/root/create_user.sh users.csv
 ----
 
-. You can now play the Moon Buggy game, which is a text-based version of the
-popular Moon Patrol.  When you are finished, use the `q` command to quit the
-game, which will terminate the container.
+Let's check `/etc/passwd` to see if the new accounts were created.
 
-+
-Alternatively, you can use `podman` to kill the running container from
-*Terminal 2*.
+[source,sh,role="execute",subs=attributes+]
+----
+cat /etc/passwd
+----
 
-+
-[source,bash]
+Here's what the output should look like.
+
+image::user_accounts.png[]
+
+Let's check that home directories were created.
+
+[source,sh,role="execute",subs=attributes+]
 ----
-podman kill $(podman ps | grep -v CONTAINER | cut -f1 -d" " )
+ls -lart /home
 ----
+
+image::directories.png[]
+
+== SELinux Troubleshooting
+In this section, we will troubleshoot selinux related problems commonly
+encountered with customized web servers.
+
+=== Set up an selinux violation
+Let's set up our web server to trigger an selinux policy violation. We'll create
+a directory and a test html page in a non-standard location in our filesystem.
+Since the directory and file won't have the correct selinux context, the web
+server will not be able to serve the test html page.
+
+Create the directory by running this command.
+
+[source,sh,role="execute",subs=attributes+]
+----
+mkdir /www
+----
+
+Create the test html page.
+
+[source,sh,role="execute",subs=attributes+]
+----
+cat << EOF > /www/test.html
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>I love Red Hat Enterprise Linux</h1>
+<p>Command Line Assistant is awesome.</p>
+
+</body>
+</html>
+EOF
+----
+
+Let's create a soft link from the default http directory to `/www/test.html`.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "how do I soft link /www/test.html to the default http directory"
+----
+
+The answer should include the command `sudo ln -s /www/test.html
+/var/www/html/`.
+
+Let's run this.
+
+[source,sh,role="execute",subs=attributes+]
+----
+ln -s /www/test.html /var/www/html/
+----
+
+=== Test the webpage
+Try to access the web page.
+
+[source,sh,role="execute",subs=attributes+]
+----
+curl -kl http://localhost
+----
+
+You'll receive the following error:
+
+----
+blah!
+----
+
+=== Ask Command Line Assistant how to solve selinux problems
+Ask CLA how to fix selinux policy problems.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "how do I look for selinux policy violations"
+----
+
+CLA will return an answer similar to the following.
+
+image::selinux_troubleshooting.png[]
+
+Let's review the audit logs.
+
+[source,sh,role="execute",subs=attributes+]
+----
+ausearch -m avc -ts recent
+----
+
+Here's the output.
+
+```bash,nocopy
+root@rhel:~# ausearch -m avc -ts recent
+----
+time->Wed Apr 16 20:23:09 2025
+type=PROCTITLE msg=audit(1744834989.682:415): proctitle=2F7573722F7362696E2F6874747064002D44464F524547524F554E44
+type=SYSCALL msg=audit(1744834989.682:415): arch=c000003e syscall=262 success=no exit=-13 a0=ffffff9c a1=7fa3fc00aa98 a2=7fa3c27fb8b0 a3=0 items=0 ppid=5752 pid=6166 auid=4294967295 uid=48 gid=48 euid=48 suid=48 fsuid=48 egid=48 sgid=48 fsgid=48 tty=(none) ses=4294967295 comm="httpd" exe="/usr/sbin/httpd" subj=system_u:system_r:httpd_t:s0 key=(null)
+type=AVC msg=audit(1744834989.682:415): avc:  denied  { getattr } for  pid=6166 comm="httpd" path="/www/test.html" dev="sda2" ino=36336 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:root_t:s0 tclass=file permissive=0
+----
+time->Wed Apr 16 20:23:09 2025
+type=PROCTITLE msg=audit(1744834989.683:416): proctitle=2F7573722F7362696E2F6874747064002D44464F524547524F554E44
+type=SYSCALL msg=audit(1744834989.683:416): arch=c000003e syscall=262 success=no exit=-13 a0=ffffff9c a1=7fa3fc00ab78 a2=7fa3c27fb830 a3=0 items=0 ppid=5752 pid=6166 auid=4294967295 uid=48 gid=48 euid=48 suid=48 fsuid=48 egid=48 sgid=48 fsgid=48 tty=(none) ses=4294967295 comm="httpd" exe="/usr/sbin/httpd" subj=system_u:system_r:httpd_t:s0 key=(null)
+type=AVC msg=audit(1744834989.683:416): avc:  denied  { getattr } for  pid=6166 comm="httpd" path="/www/test.html" dev="sda2" ino=36336 scontext=system_u:system_r:httpd_t:s0 tcontext=system_u:object_r:root_t:s0 tclass=file permissive=0
+```
+
+We can see that we've obtained a `denied` error for `getattr` operations. Let's
+ask CLA how to fix this.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "how do I fix the error avc:  denied  { getattr } for  pid=6166 comm="httpd" path="/www/test.html""
+----
+
+Here's the output.
+
+```bash,nocopy
+root@rhel:~# c "how do I fix the error avc:  denied  { getattr } for  pid=6166 comm="httpd" path="/www/test.html""
+⁺₊+ Asking RHEL Lightspeed
+To resolve the SELinux avc: denied { getattr } error for the path /www/test.html, follow these steps:
+
+1. Check the current SELinux policy:
+   The SELinux policy assumes that httpd runs on port 80. You can verify this using the following command:
+
+   ``
+   semanage port -l | grep http
+   `
+
+2. Change the SELinux type of port 80 to match the new path:
+   Since you're using a different port (3131), you need to change the SELinux type of port 3131 to match port 80:
+
+   `
+   semanage port -a -t http_port_t -p tcp 3131
+   `
+
+3. Start httpd again:
+   After modifying the SELinux policy, restart the httpd service:
+
+   `
+   systemctl start httpd
+   `
+
+4. Verify the SELinux types for the standard and new paths:
+   Compare the SELinux types for the standard and new paths using the matchpathcon tool:
+
+   `
+   matchpathcon /var/www/html /var/test_www/html
+   `
+
+5. Change the SELinux type of the new content directory:
+   Change the SELinux type of the new /var/test_www/html content directory to the type of the default /var/www/html directory:
+
+   `
+   semanage fcontext -a -e /var/www /var/test_www
+   `
+
+6. Relabel the /var directory recursively:
+   Relabel the /var directory recursively to apply the new SELinux context:
+
+   `
+   restorecon -Rv /var/
+   `
+
+7. Use sealert to find the reason for the denial:
+   If the content remains inaccessible, use the sealert tool to find the reason for the denial:
+
+   `
+   sealert -l "*"
+   `
+
+   This will provide more detailed information about the SELinux denial and help you troubleshoot further.
+
+By following these steps, you should be able to resolve the SELinux avc: denied { getattr } error for the path /www/test.html`.
+```
+
+For the sake of brevity, we'll proceed with steps 5 and 6.
+
+[source,sh,role="execute",subs=attributes+]
+----
+semanage fcontext -a -e /var/www /www
+----
+
+[source,sh,role="execute",subs=attributes+]
+----
+restorecon -Rv /www
+----
+
+Restart the web server.
+
+[source,sh,role="execute",subs=attributes+]
+----
+systemctl restart httpd.service
+----
+
+Access the web server again:
+
+[source,sh,role="execute",subs=attributes+]
+----
+curl -kl http://localhost
+----
+
+You should see the webpage:
+
+----
+I Love Red Hat Enterprise Linux!
+
+Command Line Assistant is awesome
+----
+
+== Networking
+The Command Line Assistant is useful for configuring and troubleshooting RHEL
+networking. In this assignment we'll use CLA to help us configure DNS as well as
+port redirection.
+
+=== Configuring DNS
+Let's ask CLA what our DNS is configured to.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "how do I determine my dns server in rhel9"
+----
+
+The output should look something like this.
+image::view_dns.png[]
+
+Let's run the suggested command.
+
+[source,sh,role="execute",subs=attributes+]
+----
+cat /etc/resolv.conf
+----
+
+The output will look like this.
+```bash,nocopy
+root@rhel:~# cat /etc/resolv.conf
+# Generated by NetworkManager
+search c.instruqt-prod.internal google.internal lab
+nameserver 169.254.169.254
+```
+
+Let's add another DNS server.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "how do I configure the dns server to 8.8.8.8 from the command line?"
+----
+
+The output will look like this.
+
+image::cla_configure_dns.png[]
+
+When you run `nmcli connection show`, multiple connections are returned.
+
+[source,sh,role="execute",subs=attributes+]
+----
+nmcli connection show
+----
+
+image::nmcli_con_show.png[]
+
+How do I know what connection to configure?
+
+Let's see what connection is currently the default gateway and which NIC is
+being used.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "what is my default gateway"
+----
+
+image::default_gateway.png[]
+
+Let's run `ip route | grep default`.
+
+[source,sh,role="execute",subs=attributes+]
+----
+ip route | grep default
+----
+
+Here's the output.
+
+```bash,nocopy
+root@rhel:~# ip route | grep default
+default via 10.5.0.1 dev eth0 proto dhcp src 10.5.0.92 metric 100
+```
+
+We can see that the default route is set for eth0. eth0 is configured to `Wired
+connection 1`.
+
+As per the instructions above, run the following command to configure the new
+DNS server.
+
+[source,sh,role="execute",subs=attributes+]
+----
+nmcli connection modify Wired\ connection\ 1 ipv4.dns 8.8.8.8
+----
+
+Then we need to activate the connection.
+
+[source,sh,role="execute",subs=attributes+]
+----
+nmcli connection up Wired\ connection\ 1
+----
+
+Check the results.
+
+[source,sh,role="execute",subs=attributes+]
+----
+cat /etc/resolv.conf
+----
+
+We can see that `8.8.8.8` is now configured as a DNS server.
+
+image::8888_dns.png[]
+
+=== Configure port redirection
+Let's configure our system to redirect requests to port 9000 to port 80. That
+way when we run `curl` against port 9000, we'll obtain the test webpage we
+created in the previous assignment.
+
+Let's ask CLA how to do this.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "how do I forward requests to port 9000 to 80"
+----
+
+We'll run the commands recommended by CLA.
+
+[source,sh,role="execute",subs=attributes+]
+----
+firewall-cmd --zone=trusted --add-forward-port=port=9000:proto=tcp:toport=80 --permanent
+----
+
+[source,sh,role="execute",subs=attributes+]
+----
+firewall-cmd --reload
+----
+
+Let's test this out.
+
+[source,sh,role="execute",subs=attributes+]
+----
+curl http://localhost:9000/test.html
+----
+
+Here's the result you should get.
+
+image::redirected_result.png[]
+
+== Knowledgebase Articles
+Command Line Assistant has the ability to return answers that make use of a
+Retrieval Augmented Generation database that provides Red Hat Enterprise Linux
+specific knowledge.
+
+For example, let's try asking CLA the following question.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "what is simple content access"
+----
+
+Simple Content Access (SCA) is a simplified subscription model and CLA can
+return the full definition and links to additional documentation.
+
+image::sca.png[]
+
+On the topic of subscriptions, let's ask CLA how to use `subscription-manager`.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "what is subscription-manager"
+----
+
+As you can see we are provided a summary on how to use `subscription-manager`.
+
+image::subscription_manager.png[]
+
+Ansible core is included with a RHEL subscription. Ask CLA what it is.
+
+[source,sh,role="execute",subs=attributes+]
+----
+c "what is ansible-core"
+----
+
+image::ansible_core.png[]
+
+That concludes this lab. Thank you for taking the time to learn more about
+Command Line Assistant.
