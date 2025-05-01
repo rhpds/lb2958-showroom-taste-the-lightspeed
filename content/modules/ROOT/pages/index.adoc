@@ -1,14 +1,17 @@
 = {lab_name}
+
 Thank you for joining our lab on Red Hat's Lightspeed virtual assistants.
 Today, you will get to try the assistants for RHEL, Ansible Automation Platform,
 and OpenShift Container Platform.
 
 == RHEL Lightspeed
+
 RHEL Lightspeed is a command-line-based virtual assistant that...
 
 == Ansible Automation Platform Lightspeed
 
 == OpenShift Lightspeed
+
 OpenShift Lightspeed is a virtual assistant embedded into the OpenShift web
 console, allowing you to troubleshoot, learn, and explore your OpeneShift
 cluster using the power of generative AI.
