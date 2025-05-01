@@ -1,6 +1,7 @@
 = RHEL Lightspeed
 
 == Timezone Changes
+
 Let's ask Command Line Assistant (CLA) how to configure the timezone of our RHEL
 system to Vancouver, Canada. Click the run button in the top right corner of the
 code block below.
@@ -30,6 +31,7 @@ timedatectl
 image::timedatectl.png[]
 
 == Scripting Assistance
+
 It may be the case that you will have to perform a repetitive task, such as
 creating user accounts, at least once in your life. Command Line Assistant can
 help you reduce the burden of such a task.
@@ -130,10 +132,12 @@ ls -lart /home
 image::directories.png[]
 
 == SELinux Troubleshooting
+
 In this section, we will troubleshoot selinux related problems commonly
 encountered with customized web servers.
 
 === Set up an selinux violation
+
 Let's set up our web server to trigger an selinux policy violation. We'll create
 a directory and a test html page in a non-standard location in our filesystem.
 Since the directory and file won't have the correct selinux context, the web
@@ -181,6 +185,7 @@ ln -s /www/test.html /var/www/html/
 ----
 
 === Test the webpage
+
 Try to access the web page.
 
 [source,sh,role="execute",subs=attributes+]
@@ -195,6 +200,7 @@ blah!
 ----
 
 === Ask Command Line Assistant how to solve selinux problems
+
 Ask CLA how to fix selinux policy problems.
 
 [source,sh,role="execute",subs=attributes+]
@@ -333,11 +339,13 @@ Command Line Assistant is awesome
 ----
 
 == Networking
+
 The Command Line Assistant is useful for configuring and troubleshooting RHEL
 networking. In this assignment we'll use CLA to help us configure DNS as well as
 port redirection.
 
 === Configuring DNS
+
 Let's ask CLA what our DNS is configured to.
 
 [source,sh,role="execute",subs=attributes+]
@@ -439,6 +447,7 @@ We can see that `8.8.8.8` is now configured as a DNS server.
 image::8888_dns.png[]
 
 === Configure port redirection
+
 Let's configure our system to redirect requests to port 9000 to port 80. That
 way when we run `curl` against port 9000, we'll obtain the test webpage we
 created in the previous assignment.
@@ -474,6 +483,7 @@ Here's the result you should get.
 image::redirected_result.png[]
 
 == Knowledgebase Articles
+
 Command Line Assistant has the ability to return answers that make use of a
 Retrieval Augmented Generation database that provides Red Hat Enterprise Linux
 specific knowledge.
