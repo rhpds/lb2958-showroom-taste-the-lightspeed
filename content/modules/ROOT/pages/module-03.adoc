@@ -1,9 +1,11 @@
 = OpenShift Lightspeed
+
 OpenShift Lightspeed uses a natural language interface to allow users to ask
 questions. You have used many chat interfaces before, so OpenShift Lightspeed 
 should feel very comfortable to use.
 
 == OpenShift Lightspeed Architecture
+
 OpenShift Lightspeed today is a relatively small and lightweight system that
 you deploy into each OpenShift Container Platform cluster. The operator deploys
 three components:
@@ -21,6 +23,7 @@ model.
 The little green box says RAG which stands for retrieval-augmented generation.
 
 == RAG Basics
+
 RAG is a way of providing additional context to an LLM to help improve the
 quality of responses. When relying on only the LLM, two common problems can
 arise:
@@ -46,6 +49,7 @@ Now, with your understanding of the fundamentals, let's try and use OpenShift
 Lightspeed.
 
 == Guardrails
+
 OpenShift Lightspeed is designed only to answer OpenShift-related questions, and
 it will generally attempt to reject questions that are unrelated to OpenShift 
 and Kubernetes. If you try hard enough, you can probably get it to do something
@@ -57,6 +61,7 @@ something bad, be sure to report it using the feedback feature. We will always
 do our best to improve the quality and safety of the system.
 
 == Starter Question
+
 Log into your OpenShift console using the admin credentials provided on the 
 original screen where you found the link to this lab guide. Once you have
 logged-in, you should see the OpenShift Lightspeed button in the bottom-right
@@ -83,6 +88,7 @@ generate its response:
 image::related-docs.png[]
 
 == Troubleshooting Question
+
 In your environment there is a pod that is failing to schedule for some reason.
 In the OpenShift console, click _Workloads_ on the left, then _Pods_, and then
 make sure to select the project named `broken` from the dropdown at the top of
@@ -130,6 +136,7 @@ a service, a route, and a deployment. This can make more complicated
 troubleshooting scenarios easier.
 
 == Cluster Interrogation
+
 At this time, OpenShift Lightspeed cannot actively interrogate the cluster via
 the OpenShift/Kubernetes API, but that is a feature we are actively working on
 and hope to have in Technology Preview very soon!
@@ -144,6 +151,7 @@ What pods are in the openshift-lightspeed namespace?
 ----
 
 == Cluster Configuration
+
 While the horizontal pod autoscaler question was mostly a user workload-related
 question, OpenShift Lightspeed can just as easily help you with performing 
 cluster configuration operations. OpenShift comes with an internal container 
@@ -156,6 +164,7 @@ How can I expose the OpenShift registry outside of the cluster?
 ----
 
 == Roadmap
+
 OpenShift Lightspeed is evolving quickly, and there are many exciting features
 on the roadmap. The two most exciting ones are:
 
@@ -172,6 +181,7 @@ on the roadmap. The two most exciting ones are:
   cluster and will enhance the ability to troubleshoot problems and investigate.
 
 == Thank You!
+
 We love user feedback and talking to customers. If you're interested in meeting
 with the OpenShift Lightspeed team, please visit the product page and fill out 
 the form to https://www.redhat.com/en/technologies/cloud-computing/openshift/lightspeed[contact us]:
