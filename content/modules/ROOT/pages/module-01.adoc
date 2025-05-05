@@ -108,7 +108,7 @@ Run the script.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-/root/create_user.sh users.csv
+sudo ./create_user.sh users.csv
 ----
 
 Let's check `/etc/passwd` to see if the new accounts were created.
