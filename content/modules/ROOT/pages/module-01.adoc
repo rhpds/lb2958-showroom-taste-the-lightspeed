@@ -386,7 +386,7 @@ When you run `nmcli connection show`, multiple connections are returned.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-nmcli connection show
+sudo nmcli connection show
 ----
 
 image::nmcli_con_show.png[]
