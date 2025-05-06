@@ -8,7 +8,14 @@ and OpenShift Container Platform.
 
 RHEL Lightspeed is a command-line-based virtual assistant that...
 
-== Ansible Automation Platform Lightspeed
+== Ansible Lightspeed Intelligent Assistant
+
+Ansible Lightspeed Intelligent Assistant is a virtual assistant embedded within 
+Ansible Automation Platform (AAP). Its primary function is to enhance user 
+understanding of AAP functionalities and provide immediate support. It serves 
+as an on-demand resource to assist users with various aspects of AAP, from 
+basic usage to more complex automation strategies.
+
 
 == OpenShift Lightspeed
 
