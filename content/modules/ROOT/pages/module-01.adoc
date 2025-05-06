@@ -313,7 +313,7 @@ sudo semanage fcontext -a -e /var/www /www
 
 [source,sh,role="execute",subs=attributes+]
 ----
-restorecon -Rv /www
+sudo restorecon -Rv /www
 ----
 
 Restart the web server.
