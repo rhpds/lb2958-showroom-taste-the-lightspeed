@@ -407,7 +407,7 @@ Let's run `ip route | grep default`.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-ip route | grep default
+sudo ip route | grep default
 ----
 
 Here's the output.
