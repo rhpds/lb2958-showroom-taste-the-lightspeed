@@ -425,14 +425,14 @@ DNS server.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-sudo nmcli connection modify Wired\ connection\ 1 ipv4.dns 8.8.8.8
+sudo nmcli connection modify eth0 ipv4.dns 8.8.8.8
 ----
 
 Then we need to activate the connection.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-nmcli connection up Wired\ connection\ 1
+sudo nmcli connection up eth0
 ----
 
 Check the results.
@@ -463,12 +463,12 @@ We'll run the commands recommended by CLA.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-firewall-cmd --zone=trusted --add-forward-port=port=9000:proto=tcp:toport=80 --permanent
+sudo firewall-cmd --zone=trusted --add-forward-port=port=9000:proto=tcp:toport=80 --permanent
 ----
 
 [source,sh,role="execute",subs=attributes+]
 ----
-firewall-cmd --reload
+sudo firewall-cmd --reload
 ----
 
 Let's test this out.
