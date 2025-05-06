@@ -308,7 +308,7 @@ For the sake of brevity, we'll proceed with steps 5 and 6.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-semanage fcontext -a -e /var/www /www
+sudo semanage fcontext -a -e /var/www /www
 ----
 
 [source,sh,role="execute",subs=attributes+]
