@@ -147,7 +147,7 @@ Create the directory by running this command.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-mkdir /www
+sudo mkdir /www
 ----
 
 Create the test html page.
