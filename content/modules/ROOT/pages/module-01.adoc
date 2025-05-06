@@ -216,7 +216,7 @@ Let's review the audit logs.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-ausearch -m avc -ts recent
+sudo ausearch -m avc -ts recent
 ----
 
 Here's the output.
