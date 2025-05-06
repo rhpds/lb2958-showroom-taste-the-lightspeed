@@ -320,7 +320,7 @@ Restart the web server.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-systemctl restart httpd.service
+sudo systemctl restart httpd.service
 ----
 
 Access the web server again:
