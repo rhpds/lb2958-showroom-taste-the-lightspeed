@@ -360,7 +360,7 @@ Let's run the suggested command.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-cat /etc/resolv.conf
+sudo cat /etc/resolv.conf
 ----
 
 The output will look like this.
