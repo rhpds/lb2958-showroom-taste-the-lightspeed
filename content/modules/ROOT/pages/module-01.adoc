@@ -181,7 +181,7 @@ Let's run this.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-ln -s /www/test.html /var/www/html/
+sudo ln -s /www/test.html /var/www/html/
 ----
 
 === Test the webpage
