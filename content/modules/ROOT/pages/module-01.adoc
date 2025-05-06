@@ -425,7 +425,7 @@ DNS server.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-nmcli connection modify Wired\ connection\ 1 ipv4.dns 8.8.8.8
+sudo nmcli connection modify Wired\ connection\ 1 ipv4.dns 8.8.8.8
 ----
 
 Then we need to activate the connection.
