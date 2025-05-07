@@ -4,6 +4,7 @@
 
 SSH into node1.
 
+[source,sh,role="execute",subs=attributes+]
 ----
 ssh node1
 ----
@@ -113,6 +114,7 @@ EOF
 
 Make the script executable.
 
+[source,sh,role="execute",subs=attributes+]
 ----
 chmod +x /home/lab-user/create_user.sh
 ----
