@@ -160,6 +160,12 @@ a directory and a test html page in a non-standard location in our filesystem.
 Since the directory and file won't have the correct selinux context, the web
 server will not be able to serve the test html page.
 
+Enable the Apache web server service.
+[source,sh,role="execute",subs=attributes+]
+----
+sudo systemctl enable --now httpd.service
+----
+
 Create the directory by running this command.
 
 [source,sh,role="execute",subs=attributes+]
@@ -447,22 +453,21 @@ root@rhel:~# ip route | grep default
 default via 10.5.0.1 dev eth0 proto dhcp src 10.5.0.92 metric 100
 ```
 
-We can see that the default route is set for eth0. eth0 is configured to `Wired
-connection 1`.
+We can see that the default route is set for eth0. eth0 is configured to `System\ eth0`.
 
 As per the instructions above, run the following command to configure the new
 DNS server.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-sudo nmcli connection modify eth0 ipv4.dns 8.8.8.8
+sudo nmcli connection modify System\ eth0 ipv4.dns 8.8.8.8
 ----
 
 Then we need to activate the connection.
 
 [source,sh,role="execute",subs=attributes+]
 ----
-sudo nmcli connection up eth0
+sudo nmcli connection up System\ eth0
 ----
 
 Check the results.
@@ -476,41 +481,41 @@ We can see that `8.8.8.8` is now configured as a DNS server.
 
 image::8888_dns.png[]
 
-=== Configure port redirection
+// === Configure port redirection
 
-Let's configure our system to redirect requests to port 9000 to port 80. That
-way when we run `curl` against port 9000, we'll obtain the test webpage we
-created in the previous assignment.
+// Let's configure our system to redirect requests to port 9000 to port 80. That
+// way when we run `curl` against port 9000, we'll obtain the test webpage we
+// created in the previous assignment.
 
-Let's ask CLA how to do this.
+// Let's ask CLA how to do this.
 
-[source,sh,role="execute",subs=attributes+]
-----
-c "how do I forward requests to port 9000 to 80"
-----
+// [source,sh,role="execute",subs=attributes+]
+// ----
+// c "how do I forward requests to port 9000 to 80"
+// ----
 
-We'll run the commands recommended by CLA.
+// We'll run the commands recommended by CLA.
 
-[source,sh,role="execute",subs=attributes+]
-----
-sudo firewall-cmd --zone=trusted --add-forward-port=port=9000:proto=tcp:toport=80 --permanent
-----
+// [source,sh,role="execute",subs=attributes+]
+// ----
+// sudo firewall-cmd --zone=public --add-forward-port=port=9000:proto=tcp:toport=80 --permanent
+// ----
 
-[source,sh,role="execute",subs=attributes+]
-----
-sudo firewall-cmd --reload
-----
+// [source,sh,role="execute",subs=attributes+]
+// ----
+// sudo firewall-cmd --reload
+// ----
 
-Let's test this out.
+// Let's test this out.
 
-[source,sh,role="execute",subs=attributes+]
-----
-curl http://localhost:9000/test.html
-----
+// [source,sh,role="execute",subs=attributes+]
+// ----
+// curl http://localhost:9000/test.html
+// ----
 
-Here's the result you should get.
+// Here's the result you should get.
 
-image::redirected_result.png[]
+// image::redirected_result.png[]
 
 == Knowledgebase Articles
 
